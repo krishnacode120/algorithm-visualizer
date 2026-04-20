@@ -1,31 +1,185 @@
-# Advanced Algorithm Visualizer
+# 🧠 Advanced Algorithm Visualizer
 
-An interactive React + TypeScript system for learning algorithms through animation, reversible execution, metrics, source-line highlighting, comparison mode, editable inputs, sound cues, and real-time explanations.
+An **interactive, production-grade Algorithm Visualizer** built with **React + TypeScript** that goes beyond basic animations.
+This system focuses on **deep understanding, reversible execution, real-time explanations, and analytical insights**.
 
-## Features
+---
 
-- Sorting: Bubble Sort, Merge Sort, Quick Sort, Heap Sort
-- Pathfinding: BFS, DFS, Dijkstra, A*
-- Graph algorithms: Kruskal MST, Prim MST
-- Backtracking: Sudoku Solver, N-Queens
-- Dynamic Programming: Fibonacci DP, 0/1 Knapsack
-- Generator-style execution that emits intermediate states
-- Playback controls: play, pause, step forward, step backward, reset, speed slider
-- Decision explanation panel with "what" and "why" for every step
-- Metrics dashboard for complexity, steps, comparisons, swaps, and approximate memory
-- Comparison mode for up to three sorting algorithms
-- Custom array input and random input generation
-- Editable pathfinding grids with wall, erase, start, and end paint modes
-- Editable graph edges using `A-B:4` style weighted input
-- Editable Sudoku boards and bounded N-Queens board sizes
-- Action-aware sound effects with a simple on/off toggle
-- Complexity growth chart
-- Active learning panel with invariants, prediction prompts, misconception callouts, and score badges
-- Scenario Lab with presets plus JSON import/export
-- Drag-to-paint pathfinding grid editing
-- Keyboard shortcuts, reduced-motion mode, and presentation mode
+# 🚀 Overview
 
-## Project Structure
+This project is designed as a **complete learning and exploration platform** for algorithms.
+
+Unlike traditional visualizers, it provides:
+
+* Step-by-step execution with **time travel debugging**
+* Real-time **decision explanations**
+* Multi-algorithm **comparison mode**
+* Interactive **learning and prediction system**
+
+👉 Goal:
+
+> Help users **understand how and why algorithms work**, not just see them.
+
+---
+
+# ✨ Key Features
+
+## 🧠 Algorithm Coverage
+
+### 🔢 Sorting Algorithms
+
+* Bubble Sort
+* Merge Sort
+* Quick Sort
+* Heap Sort
+
+### 🧭 Pathfinding Algorithms
+
+* Breadth-First Search (BFS)
+* Depth-First Search (DFS)
+* Dijkstra's Algorithm
+* A* Search
+
+### 🌐 Graph Algorithms
+
+* Kruskal’s Minimum Spanning Tree
+* Prim’s Minimum Spanning Tree
+
+### 🧩 Backtracking Algorithms
+
+* Sudoku Solver
+* N-Queens
+
+### 📊 Dynamic Programming
+
+* Fibonacci (DP)
+* 0/1 Knapsack
+
+---
+
+## 🎮 Interactive Execution Engine
+
+* Generator-based algorithm execution
+* Emits **immutable step states**
+* Enables:
+
+  * ▶ Play
+  * ⏸ Pause
+  * ⏭ Step forward
+  * ⏮ Step backward
+  * 🔄 Reset
+  * ⚡ Speed control
+
+---
+
+## ⏳ Time Travel Debugger
+
+* Navigate through every state
+* Jump to any step instantly
+* Replay execution like a timeline
+
+---
+
+## 🧠 Explanation Engine
+
+Each step includes:
+
+* ✅ What is happening
+* 🤔 Why it is happening
+
+Example:
+
+> “Swapping because left element is greater than right, violating sorted order.”
+
+---
+
+## 📊 Metrics Dashboard
+
+Real-time metrics:
+
+* Time complexity (theoretical)
+* Steps executed
+* Comparisons count
+* Swap count
+* Approximate memory usage
+
+---
+
+## ⚖️ Algorithm Comparison Mode
+
+* Run up to **3 algorithms simultaneously**
+* Compare:
+
+  * Execution time
+  * Steps
+  * Efficiency
+
+---
+
+## 🎯 Active Learning System
+
+* Prediction prompts:
+
+  > “What will happen next?”
+* Score tracking
+* Misconception detection
+* Learning badges
+
+---
+
+## 🎛️ Scenario Lab
+
+* Predefined scenarios
+* JSON import/export
+* Custom experiment creation
+
+---
+
+## 🎨 Visual Systems
+
+* Sorting → Canvas bars
+* Pathfinding → Grid system
+* Graph → SVG nodes + edges
+* Backtracking → Grid + overlays
+
+---
+
+## 🧩 Advanced UI Features
+
+* Drag-to-paint grid editing
+* Custom array input
+* Editable graph edges (`A-B:4`)
+* Editable Sudoku boards
+* Adjustable N-Queens board size
+
+---
+
+## 🔊 Sound Feedback
+
+* Action-based sound cues
+* Toggle on/off
+
+---
+
+## 📈 Complexity Visualization
+
+* Growth charts for:
+
+  * O(n)
+  * O(n log n)
+  * O(n²)
+
+---
+
+## 🎹 Accessibility & UX
+
+* Keyboard shortcuts
+* Reduced motion mode
+* Presentation mode
+
+---
+
+# 🏗️ Project Structure
 
 ```text
 .
@@ -33,12 +187,12 @@ An interactive React + TypeScript system for learning algorithms through animati
 |   `-- FEATURE_ROADMAP.md
 |-- frontend/
 |   |-- src/
-|   |   |-- algorithms/
-|   |   |-- components/
-|   |   |-- pages/
-|   |   |-- store/
-|   |   |-- utils/
-|   |   `-- visualizers/
+|   |   |-- algorithms/      # Algorithm implementations
+|   |   |-- components/      # UI components
+|   |   |-- pages/           # Main pages
+|   |   |-- store/           # State management
+|   |   |-- utils/           # Helpers
+|   |   `-- visualizers/     # Rendering systems
 |   |-- index.html
 |   |-- package.json
 |   |-- tsconfig.json
@@ -48,50 +202,183 @@ An interactive React + TypeScript system for learning algorithms through animati
 `-- README.md
 ```
 
-## Run Locally
+---
+
+# ⚙️ How It Works
+
+## 🔄 Execution Model
+
+Each algorithm is implemented as a **generator**:
+
+```ts
+yield {
+  array: [...],
+  activeIndices: [i, j],
+  action: "compare",
+  explanation: "Comparing adjacent elements"
+};
+```
+
+---
+
+## 🧠 State System
+
+* All steps are stored as **immutable states**
+* Playback system uses an index pointer
+* Enables:
+
+  * reverse execution
+  * deterministic replay
+
+---
+
+## 🎨 Rendering System
+
+Different visualizers use the same state:
+
+| Algorithm Type | Renderer |
+| -------------- | -------- |
+| Sorting        | Canvas   |
+| Pathfinding    | Grid     |
+| Graph          | SVG      |
+| Backtracking   | Grid     |
+
+---
+
+## 🧠 Explanation Binding
+
+Each step includes:
+
+* Action
+* Reason
+* Highlighted pseudocode line
+
+---
+
+# 🚀 Getting Started
+
+## 📦 Install Dependencies
 
 ```bash
 npm --prefix frontend install
+```
+
+---
+
+## ▶️ Run Development Server
+
+```bash
 npm run dev
 ```
 
-Open the printed Vite URL in your browser.
+Open the displayed URL in your browser.
 
-## Build
+---
+
+## 🏗️ Build Project
 
 ```bash
 npm run build
 ```
 
-The build output is written to `frontend/dist`.
+Output will be in:
 
-## Deploy On Vercel
+```text
+frontend/dist
+```
 
-This repository includes a root `vercel.json` so Vercel can deploy the nested Vite app without manual command guessing.
+---
 
-Recommended import settings:
+# 🌐 Deployment (Vercel)
 
-- Framework preset: Vite
-- Install command: `npm ci --prefix frontend`
-- Build command: `npm run build`
-- Output directory: `frontend/dist`
+This project includes a ready `vercel.json`.
 
-The config also includes an SPA rewrite to `index.html`, immutable caching for hashed Vite assets, and a basic `nosniff` security header.
+### Recommended Settings:
 
-## Roadmap
+* Framework: Vite
+* Install:
 
-See [docs/FEATURE_ROADMAP.md](docs/FEATURE_ROADMAP.md) for proposed upgrades covering new algorithm categories, active learning, gamification, authoring tools, performance improvements, accessibility, and classroom features.
+```bash
+npm ci --prefix frontend
+```
 
-Implemented roadmap batch:
+* Build:
 
-- Dynamic Programming category with Fibonacci DP and 0/1 Knapsack
-- Active Learning panel and prediction scoring
-- Scenario presets and JSON import/export
-- Drag-to-paint pathfinding editing
-- Keyboard shortcuts, reduced-motion mode, and presentation mode
+```bash
+npm run build
+```
 
-## Design Notes
+* Output:
 
-Each algorithm produces a list of immutable `AlgorithmStep` states. The playback store keeps a current index into that history, which makes reverse execution deterministic and cheap. Visualizers read the same state shape while rendering the appropriate view: Canvas for sorting, CSS grid for pathfinding and backtracking, and SVG for graph algorithms.
+```text
+frontend/dist
+```
 
-The explanation panel is tied directly to the emitted state, so every visual action has an accompanying reason and a highlighted pseudocode line. Backtracking solvers report invalid and unsolved inputs explicitly instead of marking every run as successful.
+---
+
+# 🛠️ Roadmap
+
+See:
+
+```
+docs/FEATURE_ROADMAP.md
+```
+
+### Already Implemented:
+
+* Dynamic Programming support
+* Active learning system
+* Scenario lab
+* Advanced input editing
+* Accessibility modes
+
+---
+
+# 🎯 Design Philosophy
+
+This project is built around:
+
+### ❌ Not just visualization
+
+### ✅ Understanding + reasoning + interaction
+
+It combines:
+
+* Visualization 🎨
+* Education 🎓
+* Debugging 🧠
+* Analysis 📊
+
+---
+
+# 🏆 Why This Project Stands Out
+
+* Time-travel debugging
+* Explanation-driven learning
+* Multi-algorithm comparison
+* Real-world usability
+
+👉 This is not a demo project
+👉 It is a **complete learning platform**
+
+---
+
+# 👨‍💻 Author
+
+Krishna Moorthy
+AI & Full Stack Developer
+
+---
+
+# ⭐ Final Note
+
+This project demonstrates:
+
+* Advanced frontend engineering
+* Algorithm understanding
+* System design thinking
+* UX-focused learning tools
+
+---
+
+👉 If you find this useful, consider starring the repo ⭐
