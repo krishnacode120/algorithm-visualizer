@@ -1,6 +1,6 @@
 # Advanced Algorithm Visualizer
 
-An interactive React + TypeScript system for learning algorithms through animation, reversible execution, metrics, source-line highlighting, comparison mode, and real-time explanations.
+An interactive React + TypeScript system for learning algorithms through animation, reversible execution, metrics, source-line highlighting, comparison mode, editable inputs, sound cues, and real-time explanations.
 
 ## Features
 
@@ -23,27 +23,30 @@ An interactive React + TypeScript system for learning algorithms through animati
 ## Project Structure
 
 ```text
-algorithm-visualizer/
-├── frontend/
-│   ├── src/
-│   │   ├── algorithms/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── store/
-│   │   ├── utils/
-│   │   └── visualizers/
-│   ├── index.html
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
-└── README.md
+.
+|-- docs/
+|   `-- FEATURE_ROADMAP.md
+|-- frontend/
+|   |-- src/
+|   |   |-- algorithms/
+|   |   |-- components/
+|   |   |-- pages/
+|   |   |-- store/
+|   |   |-- utils/
+|   |   `-- visualizers/
+|   |-- index.html
+|   |-- package.json
+|   |-- tsconfig.json
+|   `-- vite.config.ts
+|-- package.json
+|-- vercel.json
+`-- README.md
 ```
 
 ## Run Locally
 
 ```bash
-cd algorithm-visualizer/frontend
-npm install
+npm --prefix frontend install
 npm run dev
 ```
 
@@ -52,12 +55,30 @@ Open the printed Vite URL in your browser.
 ## Build
 
 ```bash
-cd algorithm-visualizer/frontend
 npm run build
 ```
+
+The build output is written to `frontend/dist`.
+
+## Deploy On Vercel
+
+This repository includes a root `vercel.json` so Vercel can deploy the nested Vite app without manual command guessing.
+
+Recommended import settings:
+
+- Framework preset: Vite
+- Install command: `npm ci --prefix frontend`
+- Build command: `npm run build`
+- Output directory: `frontend/dist`
+
+The config also includes an SPA rewrite to `index.html`, immutable caching for hashed Vite assets, and a basic `nosniff` security header.
+
+## Roadmap
+
+See [docs/FEATURE_ROADMAP.md](docs/FEATURE_ROADMAP.md) for proposed upgrades covering new algorithm categories, active learning, gamification, authoring tools, performance improvements, accessibility, and classroom features.
 
 ## Design Notes
 
 Each algorithm produces a list of immutable `AlgorithmStep` states. The playback store keeps a current index into that history, which makes reverse execution deterministic and cheap. Visualizers read the same state shape while rendering the appropriate view: Canvas for sorting, CSS grid for pathfinding and backtracking, and SVG for graph algorithms.
 
-The explanation panel is tied directly to the emitted state, so every visual action has an accompanying reason and a highlighted pseudocode line. Backtracking solvers now report invalid and unsolved inputs explicitly instead of marking every run as successful.
+The explanation panel is tied directly to the emitted state, so every visual action has an accompanying reason and a highlighted pseudocode line. Backtracking solvers report invalid and unsolved inputs explicitly instead of marking every run as successful.
