@@ -7,6 +7,7 @@ const categories: { id: Category; label: string }[] = [
   { id: 'pathfinding', label: 'Pathfinding' },
   { id: 'graph', label: 'Graph' },
   { id: 'backtracking', label: 'Backtracking' },
+  { id: 'dynamic-programming', label: 'DP' },
 ];
 
 export function Selectors() {

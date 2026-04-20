@@ -3,7 +3,7 @@ import { useVisualizerStore } from '../store/visualizerStore';
 import { playStepSound, warmAudio } from '../utils/sound';
 
 export function PlaybackControls() {
-  const { isPlaying, play, pause, reset, stepForward, stepBackward, speed, setSpeed, currentIndex, steps, soundEnabled, toggleSound } = useVisualizerStore();
+  const { isPlaying, play, pause, reset, stepForward, stepBackward, speed, setSpeed, currentIndex, steps, soundEnabled, toggleSound, reducedMotion } = useVisualizerStore();
   const lastSoundIndex = useRef(currentIndex);
 
   useEffect(() => {
@@ -11,7 +11,8 @@ export function PlaybackControls() {
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {
-      if (now - last >= speed) {
+      const effectiveSpeed = reducedMotion ? Math.max(speed, 700) : speed;
+      if (now - last >= effectiveSpeed) {
         last = now;
         const { currentIndex: index, steps: allSteps, advancePlayback, pause: stop } = useVisualizerStore.getState();
         if (index >= allSteps.length - 1) stop();
@@ -21,7 +22,7 @@ export function PlaybackControls() {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [isPlaying, speed]);
+  }, [isPlaying, reducedMotion, speed]);
 
   useEffect(() => {
     if (!soundEnabled || !steps[currentIndex]) return;

@@ -1,6 +1,7 @@
 import { getAlgorithm } from '../algorithms';
 import { useVisualizerStore } from '../store/visualizerStore';
 import { BacktrackingVisualizer } from './BacktrackingVisualizer';
+import { DynamicProgrammingVisualizer } from './DynamicProgrammingVisualizer';
 import { GraphVisualizer } from './GraphVisualizer';
 import { GridVisualizer } from './GridVisualizer';
 import { SortingCanvas } from './SortingCanvas';
@@ -22,6 +23,7 @@ export function VisualizerStage() {
         {algorithm.category === 'pathfinding' && <GridVisualizer step={step} />}
         {algorithm.category === 'graph' && <GraphVisualizer step={step} />}
         {algorithm.category === 'backtracking' && <BacktrackingVisualizer step={step} />}
+        {algorithm.category === 'dynamic-programming' && <DynamicProgrammingVisualizer step={step} />}
       </div>
     </main>
   );

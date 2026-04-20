@@ -17,14 +17,19 @@ export function InputPanel() {
     setSudokuFromText,
     resetSudoku,
     setQueensSize,
+    setDpSize,
+    setKnapsackCapacity,
+    setKnapsackItemsFromText,
   } = useVisualizerStore();
   const [size, setSize] = useState(input.array.length);
   const [custom, setCustom] = useState(input.array.join(', '));
   const [graphText, setGraphText] = useState('');
   const [sudokuText, setSudokuText] = useState('');
+  const [knapsackText, setKnapsackText] = useState('');
 
   const graphValue = useMemo(() => input.graph.edges.map((edge) => `${edge.source}-${edge.target}:${edge.weight}`).join('\n'), [input.graph]);
   const sudokuValue = useMemo(() => input.sudoku.map((row) => row.map((value) => value || '.').join('')).join('\n'), [input.sudoku]);
+  const knapsackValue = useMemo(() => input.knapsackItems.map((item) => `${item.weight}:${item.value}`).join('\n'), [input.knapsackItems]);
 
   useEffect(() => {
     setCustom(input.array.join(', '));
@@ -33,6 +38,7 @@ export function InputPanel() {
 
   useEffect(() => setGraphText(graphValue), [graphValue]);
   useEffect(() => setSudokuText(sudokuValue), [sudokuValue]);
+  useEffect(() => setKnapsackText(knapsackValue), [knapsackValue]);
 
   const gridModes: { id: GridEditMode; label: string }[] = [
     { id: 'wall', label: 'Wall' },
@@ -95,6 +101,28 @@ export function InputPanel() {
             <input type="number" min="1" max="10" value={input.queensSize} onChange={(event) => setQueensSize(Number(event.target.value))} />
           </label>
           <span className="field-note">Sizes 2 and 3 intentionally show no solution.</span>
+        </div>
+      )}
+      {category === 'dynamic-programming' && selectedId === 'fibonacci' && (
+        <div className="input-group">
+          <label>
+            Fibonacci n
+            <input type="number" min="1" max="18" value={input.dpSize} onChange={(event) => setDpSize(Number(event.target.value))} />
+          </label>
+          <span className="field-note">The table grows from base cases to the requested value.</span>
+        </div>
+      )}
+      {category === 'dynamic-programming' && selectedId === 'knapsack' && (
+        <div className="input-group">
+          <label>
+            Capacity
+            <input type="number" min="1" max="20" value={input.knapsackCapacity} onChange={(event) => setKnapsackCapacity(Number(event.target.value))} />
+          </label>
+          <label>
+            Items weight:value
+            <textarea value={knapsackText} onChange={(event) => setKnapsackText(event.target.value)} onBlur={() => setKnapsackItemsFromText(knapsackText)} />
+          </label>
+          <span className="field-note">Use one item per line, for example 2:6.</span>
         </div>
       )}
       <div className="hint-block">

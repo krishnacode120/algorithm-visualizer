@@ -2,6 +2,17 @@
 
 This roadmap focuses on making the visualizer more educational, more interactive, and easier to grow without turning it into a cluttered demo.
 
+## Implemented In The Current Roadmap Batch
+
+| Area | Implemented Feature | Benefit |
+| --- | --- | --- |
+| New categories | Dynamic Programming with Fibonacci DP and 0/1 Knapsack | Adds table-based reasoning and recurrence visualization. |
+| Active learning | Invariant panel, prediction prompts, misconception callouts, prediction score badges | Moves users from passive watching to active reasoning. |
+| Better editing | Drag-to-paint pathfinding, scenario presets, JSON import/export | Makes custom demonstrations faster and shareable. |
+| Accessibility | Keyboard shortcuts, reduced-motion mode, presentation mode | Improves classroom use and keyboard-driven workflows. |
+
+The remaining sections describe the next high-value expansions.
+
 ## 1. New Algorithm Categories
 
 | Category | Candidate Algorithms | Benefit |

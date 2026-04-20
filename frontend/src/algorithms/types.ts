@@ -1,4 +1,4 @@
-export type Category = 'sorting' | 'pathfinding' | 'graph' | 'backtracking';
+export type Category = 'sorting' | 'pathfinding' | 'graph' | 'backtracking' | 'dynamic-programming';
 
 export type AlgorithmId =
   | 'bubble-sort'
@@ -12,7 +12,9 @@ export type AlgorithmId =
   | 'kruskal'
   | 'prim'
   | 'sudoku'
-  | 'n-queens';
+  | 'n-queens'
+  | 'fibonacci'
+  | 'knapsack';
 
 export type ActionKind =
   | 'compare'
@@ -61,6 +63,14 @@ export interface BacktrackingState {
   invalidCells?: string[];
 }
 
+export interface DynamicProgrammingState {
+  table: (number | string)[][];
+  activeCells?: string[];
+  rowLabels?: string[];
+  colLabels?: string[];
+  summary?: string;
+}
+
 export interface Metrics {
   steps: number;
   comparisons: number;
@@ -83,6 +93,11 @@ export interface AlgorithmStep {
   graph?: { nodes: GraphNode[]; edges: GraphEdge[] };
   activeNodes?: string[];
   backtracking?: BacktrackingState;
+  dp?: DynamicProgrammingState;
+  variables?: Record<string, string | number>;
+  invariant?: string;
+  prompt?: string;
+  misconception?: string;
   metrics: Metrics;
 }
 
@@ -106,4 +121,7 @@ export interface AlgorithmInput {
   graph: { nodes: GraphNode[]; edges: GraphEdge[] };
   sudoku: number[][];
   queensSize: number;
+  dpSize: number;
+  knapsackCapacity: number;
+  knapsackItems: { weight: number; value: number }[];
 }

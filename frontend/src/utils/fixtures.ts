@@ -52,6 +52,14 @@ export const createDefaultInput = (): AlgorithmInput => ({
   graph: createGraph(),
   sudoku: defaultSudoku(),
   queensSize: 8,
+  dpSize: 8,
+  knapsackCapacity: 10,
+  knapsackItems: [
+    { weight: 2, value: 6 },
+    { weight: 3, value: 8 },
+    { weight: 4, value: 10 },
+    { weight: 5, value: 12 },
+  ],
 });
 
 export const cloneGrid = (grid: GridCell[][]) => grid.map((row) => row.map((cell) => ({ ...cell })));

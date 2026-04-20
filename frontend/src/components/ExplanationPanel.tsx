@@ -27,6 +27,18 @@ export function ExplanationPanel() {
           <span>Memory</span><b>{metrics.memory} B</b>
         </div>
       </section>
+      {step?.variables && (
+        <section>
+          <h2>Live Variables</h2>
+          <div className="metric-grid compact">
+            {Object.entries(step.variables).map(([key, value]) => (
+              <div className="metric-pair" key={key}>
+                <span>{key}</span><b>{value}</b>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <section>
         <h2>Code</h2>
         <ol className="code-view">

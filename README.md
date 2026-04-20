@@ -8,6 +8,7 @@ An interactive React + TypeScript system for learning algorithms through animati
 - Pathfinding: BFS, DFS, Dijkstra, A*
 - Graph algorithms: Kruskal MST, Prim MST
 - Backtracking: Sudoku Solver, N-Queens
+- Dynamic Programming: Fibonacci DP, 0/1 Knapsack
 - Generator-style execution that emits intermediate states
 - Playback controls: play, pause, step forward, step backward, reset, speed slider
 - Decision explanation panel with "what" and "why" for every step
@@ -19,6 +20,10 @@ An interactive React + TypeScript system for learning algorithms through animati
 - Editable Sudoku boards and bounded N-Queens board sizes
 - Action-aware sound effects with a simple on/off toggle
 - Complexity growth chart
+- Active learning panel with invariants, prediction prompts, misconception callouts, and score badges
+- Scenario Lab with presets plus JSON import/export
+- Drag-to-paint pathfinding grid editing
+- Keyboard shortcuts, reduced-motion mode, and presentation mode
 
 ## Project Structure
 
@@ -76,6 +81,14 @@ The config also includes an SPA rewrite to `index.html`, immutable caching for h
 ## Roadmap
 
 See [docs/FEATURE_ROADMAP.md](docs/FEATURE_ROADMAP.md) for proposed upgrades covering new algorithm categories, active learning, gamification, authoring tools, performance improvements, accessibility, and classroom features.
+
+Implemented roadmap batch:
+
+- Dynamic Programming category with Fibonacci DP and 0/1 Knapsack
+- Active Learning panel and prediction scoring
+- Scenario presets and JSON import/export
+- Drag-to-paint pathfinding editing
+- Keyboard shortcuts, reduced-motion mode, and presentation mode
 
 ## Design Notes
 

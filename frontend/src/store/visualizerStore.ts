@@ -13,13 +13,19 @@ interface VisualizerState {
   currentIndex: number;
   isPlaying: boolean;
   soundEnabled: boolean;
+  reducedMotion: boolean;
+  presentationMode: boolean;
   speed: number;
   gridEditMode: GridEditMode;
+  learningScore: number;
   comparisonIds: AlgorithmId[];
   setAlgorithm: (id: AlgorithmId) => void;
   setCategory: (category: Category) => void;
   setSpeed: (speed: number) => void;
   toggleSound: () => void;
+  toggleReducedMotion: () => void;
+  togglePresentationMode: () => void;
+  recordPrediction: () => void;
   play: () => void;
   pause: () => void;
   reset: () => void;
@@ -36,6 +42,11 @@ interface VisualizerState {
   setSudokuFromText: (value: string) => void;
   resetSudoku: () => void;
   setQueensSize: (size: number) => void;
+  setDpSize: (size: number) => void;
+  setKnapsackCapacity: (capacity: number) => void;
+  setKnapsackItemsFromText: (value: string) => void;
+  applyPreset: (preset: 'classic-sort' | 'maze' | 'dense-graph' | 'hard-sudoku' | 'dp-demo') => void;
+  importScenario: (value: string) => boolean;
   toggleComparison: (id: AlgorithmId) => void;
 }
 
@@ -88,6 +99,18 @@ const parseGraph = (value: string) => {
 
 const cloneGridForEdit = (grid: GridCell[][]) => grid.map((gridRow) => gridRow.map((cell) => ({ ...cell })));
 
+const parseKnapsackItems = (value: string) => value
+  .split(/\n|,/)
+  .map((line) => line.trim())
+  .filter(Boolean)
+  .map((line) => {
+    const match = line.match(/^(\d+)\s*(?::|\/|\s)\s*(\d+)$/);
+    if (!match) return undefined;
+    return { weight: Math.max(1, Number(match[1])), value: Math.max(0, Number(match[2])) };
+  })
+  .filter((item): item is { weight: number; value: number } => Boolean(item))
+  .slice(0, 8);
+
 export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   selectedId: 'bubble-sort',
   category: 'sorting',
@@ -96,8 +119,11 @@ export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   currentIndex: 0,
   isPlaying: false,
   soundEnabled: true,
+  reducedMotion: false,
+  presentationMode: false,
   speed: 450,
   gridEditMode: 'wall',
+  learningScore: 0,
   comparisonIds: ['bubble-sort', 'merge-sort', 'quick-sort'],
   setAlgorithm: (id) => {
     const algorithm = getAlgorithm(id);
@@ -111,6 +137,9 @@ export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   },
   setSpeed: (speed) => set({ speed }),
   toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+  toggleReducedMotion: () => set((state) => ({ reducedMotion: !state.reducedMotion })),
+  togglePresentationMode: () => set((state) => ({ presentationMode: !state.presentationMode })),
+  recordPrediction: () => set((state) => ({ learningScore: state.learningScore + 1 })),
   play: () => set((state) => ({ isPlaying: true, currentIndex: state.currentIndex >= state.steps.length - 1 ? 0 : state.currentIndex })),
   pause: () => set({ isPlaying: false }),
   reset: () => set({ currentIndex: 0, isPlaying: false }),
@@ -173,6 +202,63 @@ export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   setQueensSize: (size) => {
     const nextInput = { ...get().input, queensSize: Math.max(1, Math.min(10, Math.floor(size || 1))) };
     set((state) => rebuild(state, nextInput));
+  },
+  setDpSize: (size) => {
+    const nextInput = { ...get().input, dpSize: Math.max(1, Math.min(18, Math.floor(size || 1))) };
+    set((state) => rebuild(state, nextInput));
+  },
+  setKnapsackCapacity: (capacity) => {
+    const nextInput = { ...get().input, knapsackCapacity: Math.max(1, Math.min(20, Math.floor(capacity || 1))) };
+    set((state) => rebuild(state, nextInput));
+  },
+  setKnapsackItemsFromText: (value) => {
+    const items = parseKnapsackItems(value);
+    if (!items.length) return;
+    const nextInput = { ...get().input, knapsackItems: items };
+    set((state) => rebuild(state, nextInput));
+  },
+  applyPreset: (preset) => {
+    const currentInput = get().input;
+    const presets = {
+      'classic-sort': { ...currentInput, array: [9, 1, 5, 3, 7, 2, 8, 4, 6] },
+      maze: { ...currentInput, grid: createGrid(14, 22) },
+      'dense-graph': {
+        ...currentInput,
+        graph: parseGraph('A-B:2\nA-C:5\nA-D:4\nB-C:1\nB-E:7\nC-D:3\nC-E:2\nD-E:6\nD-F:8\nE-F:1') ?? currentInput.graph,
+      },
+      'hard-sudoku': {
+        ...currentInput,
+        sudoku: parseSudoku('..9748...\n7........\n.2.1.9...\n..7...24.\n.64.1.59.\n.98...3..\n...8.3.2.\n........6\n...2759..'),
+      },
+      'dp-demo': {
+        ...currentInput,
+        dpSize: 10,
+        knapsackCapacity: 12,
+        knapsackItems: [{ weight: 2, value: 5 }, { weight: 4, value: 9 }, { weight: 6, value: 12 }, { weight: 7, value: 14 }],
+      },
+    } satisfies Record<typeof preset, AlgorithmInput>;
+    set((state) => rebuild(state, presets[preset]));
+  },
+  importScenario: (value) => {
+    try {
+      const parsed = JSON.parse(value) as Partial<Pick<VisualizerState, 'input' | 'selectedId' | 'category' | 'speed'>>;
+      if (!parsed.input) return false;
+      const nextInput = { ...get().input, ...parsed.input };
+      const selectedId = parsed.selectedId ?? get().selectedId;
+      const category = parsed.category ?? getAlgorithm(selectedId).category;
+      set((state) => ({
+        input: nextInput,
+        steps: createSteps(selectedId, nextInput),
+        currentIndex: 0,
+        isPlaying: false,
+        selectedId,
+        category,
+        speed: parsed.speed ?? state.speed,
+      }));
+      return true;
+    } catch {
+      return false;
+    }
   },
   toggleComparison: (id) => set((state) => {
     const exists = state.comparisonIds.includes(id);
