@@ -11,19 +11,19 @@ const getContext = () => {
 };
 
 const profileByAction: Record<ActionKind, { frequency: number; duration: number; type: OscillatorType; gain: number }> = {
-  compare: { frequency: 420, duration: 0.045, type: 'sine', gain: 0.035 },
-  swap: { frequency: 220, duration: 0.075, type: 'triangle', gain: 0.05 },
-  overwrite: { frequency: 520, duration: 0.06, type: 'sine', gain: 0.04 },
-  partition: { frequency: 330, duration: 0.08, type: 'square', gain: 0.025 },
-  visit: { frequency: 360, duration: 0.055, type: 'sine', gain: 0.035 },
-  enqueue: { frequency: 480, duration: 0.045, type: 'sine', gain: 0.03 },
-  relax: { frequency: 610, duration: 0.06, type: 'triangle', gain: 0.035 },
-  choose: { frequency: 700, duration: 0.08, type: 'triangle', gain: 0.045 },
-  reject: { frequency: 170, duration: 0.07, type: 'sawtooth', gain: 0.025 },
-  place: { frequency: 640, duration: 0.08, type: 'triangle', gain: 0.045 },
-  remove: { frequency: 240, duration: 0.07, type: 'sine', gain: 0.035 },
-  complete: { frequency: 880, duration: 0.14, type: 'sine', gain: 0.05 },
-  idle: { frequency: 300, duration: 0.04, type: 'sine', gain: 0.02 },
+  compare: { frequency: 520, duration: 0.085, type: 'sine', gain: 0.12 },
+  swap: { frequency: 260, duration: 0.12, type: 'triangle', gain: 0.14 },
+  overwrite: { frequency: 640, duration: 0.1, type: 'sine', gain: 0.12 },
+  partition: { frequency: 370, duration: 0.13, type: 'square', gain: 0.08 },
+  visit: { frequency: 430, duration: 0.095, type: 'sine', gain: 0.11 },
+  enqueue: { frequency: 590, duration: 0.085, type: 'sine', gain: 0.1 },
+  relax: { frequency: 720, duration: 0.1, type: 'triangle', gain: 0.11 },
+  choose: { frequency: 820, duration: 0.14, type: 'triangle', gain: 0.14 },
+  reject: { frequency: 190, duration: 0.12, type: 'sawtooth', gain: 0.08 },
+  place: { frequency: 760, duration: 0.14, type: 'triangle', gain: 0.14 },
+  remove: { frequency: 280, duration: 0.12, type: 'sine', gain: 0.1 },
+  complete: { frequency: 980, duration: 0.2, type: 'sine', gain: 0.16 },
+  idle: { frequency: 420, duration: 0.1, type: 'sine', gain: 0.1 },
 };
 
 export const warmAudio = () => {
@@ -49,6 +49,14 @@ export const playStepSound = (action: ActionKind) => {
   gain.connect(context.destination);
   oscillator.start(now);
   oscillator.stop(now + profile.duration + 0.02);
+};
+
+export const playSoundTest = () => {
+  const context = getContext();
+  if (!context) return;
+  playStepSound('compare');
+  window.setTimeout(() => playStepSound('swap'), 95);
+  window.setTimeout(() => playStepSound('complete'), 210);
 };
 
 declare global {

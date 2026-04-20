@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useVisualizerStore } from '../store/visualizerStore';
-import { playStepSound, warmAudio } from '../utils/sound';
+import { playSoundTest, playStepSound, warmAudio } from '../utils/sound';
 
 export function PlaybackControls() {
   const { isPlaying, play, pause, reset, stepForward, stepBackward, speed, setSpeed, currentIndex, steps, soundEnabled, toggleSound } = useVisualizerStore();
+  const lastSoundIndex = useRef(currentIndex);
 
   useEffect(() => {
     if (!isPlaying) return undefined;
@@ -24,11 +25,14 @@ export function PlaybackControls() {
 
   useEffect(() => {
     if (!soundEnabled || !steps[currentIndex]) return;
+    if (lastSoundIndex.current === currentIndex) return;
+    lastSoundIndex.current = currentIndex;
     playStepSound(steps[currentIndex].action);
   }, [currentIndex, soundEnabled, steps]);
 
   const startPlayback = () => {
     warmAudio();
+    if (soundEnabled && steps[currentIndex]) playStepSound(steps[currentIndex].action);
     play();
   };
 
@@ -42,15 +46,22 @@ export function PlaybackControls() {
     stepBackward();
   };
 
+  const handleSoundToggle = () => {
+    warmAudio();
+    if (!soundEnabled) playSoundTest();
+    toggleSound();
+  };
+
   return (
     <div className="control-row">
       <button type="button" onClick={isPlaying ? pause : startPlayback} title={isPlaying ? 'Pause' : 'Play'}>{isPlaying ? 'Pause' : 'Play'}</button>
       <button type="button" onClick={manualStepBackward} title="Step backward">Back</button>
       <button type="button" onClick={manualStepForward} title="Step forward">Step</button>
       <button type="button" onClick={reset} title="Reset">Reset</button>
-      <button type="button" className={soundEnabled ? 'sound-on' : ''} onClick={() => { warmAudio(); toggleSound(); }} title="Toggle sound">
+      <button type="button" className={soundEnabled ? 'sound-on' : ''} onClick={handleSoundToggle} title="Toggle sound">
         {soundEnabled ? 'Sound on' : 'Sound off'}
       </button>
+      <button type="button" onClick={playSoundTest} title="Test sound">Test sound</button>
       <label className="slider-label">
         Speed
         <input type="range" min="80" max="1200" step="20" value={speed} onChange={(event) => setSpeed(Number(event.target.value))} />
