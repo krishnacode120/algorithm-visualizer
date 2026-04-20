@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useVisualizerStore } from '../store/visualizerStore';
-import { playSoundTest, playStepSound, warmAudio } from '../utils/sound';
+import { playStepSound, warmAudio } from '../utils/sound';
 
 export function PlaybackControls() {
   const { isPlaying, play, pause, reset, stepForward, stepBackward, speed, setSpeed, currentIndex, steps, soundEnabled, toggleSound } = useVisualizerStore();
@@ -48,7 +48,6 @@ export function PlaybackControls() {
 
   const handleSoundToggle = () => {
     warmAudio();
-    if (!soundEnabled) playSoundTest();
     toggleSound();
   };
 
@@ -61,7 +60,6 @@ export function PlaybackControls() {
       <button type="button" className={soundEnabled ? 'sound-on' : ''} onClick={handleSoundToggle} title="Toggle sound">
         {soundEnabled ? 'Sound on' : 'Sound off'}
       </button>
-      <button type="button" onClick={playSoundTest} title="Test sound">Test sound</button>
       <label className="slider-label">
         Speed
         <input type="range" min="80" max="1200" step="20" value={speed} onChange={(event) => setSpeed(Number(event.target.value))} />

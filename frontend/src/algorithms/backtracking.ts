@@ -2,6 +2,7 @@ import { AlgorithmDefinition, AlgorithmInput, AlgorithmStep, Metrics } from './t
 
 const base = (): Metrics => ({ steps: 0, comparisons: 0, swaps: 0, memory: 0 });
 const clone = (b: number[][]) => b.map((row) => [...row]);
+const MAX_BACKTRACKING_STEPS = 6000;
 
 const step = (m: Metrics, board: number[][], action: AlgorithmStep['action'], focus: [number, number] | undefined, title: string, explanation: string, why: string, line: number, invalidCells: string[] = []): AlgorithmStep => ({
   id: m.steps,
@@ -24,10 +25,35 @@ function sudokuValid(board: number[][], row: number, col: number, value: number)
   return true;
 }
 
+function initialSudokuValid(board: number[][]) {
+  for (let row = 0; row < 9; row += 1) {
+    for (let col = 0; col < 9; col += 1) {
+      const value = board[row]?.[col] ?? 0;
+      if (value === 0) continue;
+      board[row][col] = 0;
+      const valid = sudokuValid(board, row, col, value);
+      board[row][col] = value;
+      if (!valid) return [row, col] as [number, number];
+    }
+  }
+  return undefined;
+}
+
 function* sudoku(input: number[][]): Generator<AlgorithmStep> {
-  const board = clone(input);
+  const board = Array.from({ length: 9 }, (_, row) =>
+    Array.from({ length: 9 }, (_, col) => {
+      const value = input[row]?.[col] ?? 0;
+      return value >= 1 && value <= 9 ? value : 0;
+    }),
+  );
   const m = base();
+  const invalid = initialSudokuValid(board);
+  if (invalid) {
+    yield step(m, board, 'reject', invalid, 'Invalid Sudoku input', 'The starting board already has a repeated digit in a row, column, or box.', 'Backtracking cannot repair contradictions that are present before the search begins.', 3, [`${invalid[0]},${invalid[1]}`]);
+    return;
+  }
   function* solve(): Generator<AlgorithmStep, boolean> {
+    if (m.steps >= MAX_BACKTRACKING_STEPS) return false;
     for (let r = 0; r < 9; r += 1) {
       for (let c = 0; c < 9; c += 1) {
         if (board[r][c] !== 0) continue;
@@ -52,8 +78,17 @@ function* sudoku(input: number[][]): Generator<AlgorithmStep> {
     }
     return true;
   }
-  yield* solve();
-  yield step({ ...m, steps: m.steps + 1 }, board, 'complete', undefined, 'Sudoku solved', 'Every empty cell has been filled consistently.', 'The solver found assignments satisfying all row, column, and box constraints.', 15);
+  const solved = yield* solve();
+  yield step(
+    { ...m, steps: m.steps + 1 },
+    board,
+    solved ? 'complete' : 'reject',
+    undefined,
+    solved ? 'Sudoku solved' : 'No solution found',
+    solved ? 'Every empty cell has been filled consistently.' : 'The solver exhausted the available search budget without completing the board.',
+    solved ? 'The solver found assignments satisfying all row, column, and box constraints.' : 'This usually means the puzzle is contradictory, extremely sparse, or needs a larger search budget.',
+    15,
+  );
 }
 
 function queensSafe(board: number[][], row: number, col: number) {
@@ -66,11 +101,13 @@ function queensSafe(board: number[][], row: number, col: number) {
 }
 
 function* queens(size: number): Generator<AlgorithmStep> {
-  const board = Array.from({ length: size }, () => Array.from({ length: size }, () => 0));
+  const boundedSize = Math.max(1, Math.min(10, Math.floor(size || 1)));
+  const board = Array.from({ length: boundedSize }, () => Array.from({ length: boundedSize }, () => 0));
   const m = base();
   function* place(row: number): Generator<AlgorithmStep, boolean> {
-    if (row === size) return true;
-    for (let col = 0; col < size; col += 1) {
+    if (m.steps >= MAX_BACKTRACKING_STEPS) return false;
+    if (row === boundedSize) return true;
+    for (let col = 0; col < boundedSize; col += 1) {
       m.steps += 1;
       m.comparisons += 1;
       yield step(m, board, 'compare', [row, col], 'Test queen position', `Checking row ${row + 1}, column ${col + 1}.`, 'N-Queens places one queen per row and checks columns and diagonals.', 5);
@@ -88,8 +125,17 @@ function* queens(size: number): Generator<AlgorithmStep> {
     }
     return false;
   }
-  yield* place(0);
-  yield step({ ...m, steps: m.steps + 1 }, board, 'complete', undefined, 'Queens placed', `Solved ${size}-Queens with one queen per row.`, 'No queens share a column or diagonal, so no pair attacks another.', 14);
+  const solved = yield* place(0);
+  yield step(
+    { ...m, steps: m.steps + 1 },
+    board,
+    solved ? 'complete' : 'reject',
+    undefined,
+    solved ? 'Queens placed' : 'No arrangement found',
+    solved ? `Solved ${boundedSize}-Queens with one queen per row.` : `${boundedSize}-Queens has no valid arrangement within the search budget.`,
+    solved ? 'No queens share a column or diagonal, so no pair attacks another.' : 'Sizes 2 and 3 are impossible; larger boards may need a different branch order if heavily constrained.',
+    14,
+  );
 }
 
 export const backtrackingAlgorithms: AlgorithmDefinition[] = [

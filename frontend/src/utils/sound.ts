@@ -51,14 +51,6 @@ export const playStepSound = (action: ActionKind) => {
   oscillator.stop(now + profile.duration + 0.02);
 };
 
-export const playSoundTest = () => {
-  const context = getContext();
-  if (!context) return;
-  playStepSound('compare');
-  window.setTimeout(() => playStepSound('swap'), 95);
-  window.setTimeout(() => playStepSound('complete'), 210);
-};
-
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;

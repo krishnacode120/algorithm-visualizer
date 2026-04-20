@@ -14,6 +14,10 @@ An interactive React + TypeScript system for learning algorithms through animati
 - Metrics dashboard for complexity, steps, comparisons, swaps, and approximate memory
 - Comparison mode for up to three sorting algorithms
 - Custom array input and random input generation
+- Editable pathfinding grids with wall, erase, start, and end paint modes
+- Editable graph edges using `A-B:4` style weighted input
+- Editable Sudoku boards and bounded N-Queens board sizes
+- Action-aware sound effects with a simple on/off toggle
 - Complexity growth chart
 
 ## Project Structure
@@ -56,4 +60,4 @@ npm run build
 
 Each algorithm produces a list of immutable `AlgorithmStep` states. The playback store keeps a current index into that history, which makes reverse execution deterministic and cheap. Visualizers read the same state shape while rendering the appropriate view: Canvas for sorting, CSS grid for pathfinding and backtracking, and SVG for graph algorithms.
 
-The explanation panel is tied directly to the emitted state, so every visual action has an accompanying reason and a highlighted pseudocode line.
+The explanation panel is tied directly to the emitted state, so every visual action has an accompanying reason and a highlighted pseudocode line. Backtracking solvers now report invalid and unsolved inputs explicitly instead of marking every run as successful.
