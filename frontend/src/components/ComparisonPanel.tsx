@@ -16,8 +16,11 @@ export function ComparisonPanel() {
   return (
     <section className="comparison-band">
       <div className="comparison-header">
-        <h2>Comparison Mode</h2>
-        <div className="mini-picker">
+        <div>
+          <h2>Comparison Mode</h2>
+          <span className="section-subtitle">Compare sorting cost on the same input.</span>
+        </div>
+        <div className="mini-picker comparison-picker" aria-label="Select sorting algorithms to compare">
           {options.map((algorithm) => (
             <button type="button" className={comparisonIds.includes(algorithm.id) ? 'active' : ''} key={algorithm.id} onClick={() => toggleComparison(algorithm.id)}>
               {algorithm.name}
@@ -26,17 +29,18 @@ export function ComparisonPanel() {
         </div>
       </div>
       <div className="comparison-grid">
+        {!rows.length && <p className="empty-state">Choose at least one algorithm to compare.</p>}
         {rows.map(({ algorithm, last, steps }) => (
           <article className="comparison-card" key={algorithm.id}>
             <div className="comparison-title">
               <b>{algorithm.name}</b>
-              <span>{algorithm.complexity.average ?? algorithm.complexity.worst}</span>
+              <span className="complexity-badge">{algorithm.complexity.average ?? algorithm.complexity.worst}</span>
             </div>
             <div className="bar-track"><span style={{ width: `${(steps.length / maxSteps) * 100}%` }} /></div>
-            <div className="metric-grid compact">
-              <span>Steps</span><b>{last?.metrics.steps ?? 0}</b>
-              <span>Comparisons</span><b>{last?.metrics.comparisons ?? 0}</b>
-              <span>Swaps</span><b>{last?.metrics.swaps ?? 0}</b>
+            <div className="comparison-metrics">
+              <div><span>Steps</span><b>{last?.metrics.steps ?? 0}</b></div>
+              <div><span>Comparisons</span><b>{last?.metrics.comparisons ?? 0}</b></div>
+              <div><span>Swaps</span><b>{last?.metrics.swaps ?? 0}</b></div>
             </div>
           </article>
         ))}

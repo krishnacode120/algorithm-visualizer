@@ -28,7 +28,7 @@ button.sound-on { background: #e8f7ef; border-color: #2fbf71; color: #14532d; }
 .workspace { display: grid; grid-template-columns: 250px minmax(0, 1fr) 330px; gap: 16px; align-items: stretch; }
 .side-panel, .stage, .comparison-band, .complexity-band { background: #fff; border: 1px solid #dce3eb; border-radius: 8px; box-shadow: 0 8px 24px rgba(31, 41, 55, 0.07); }
 .side-panel { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-.side-panel h2, .comparison-band h2, .complexity-band h2 { margin: 0 0 10px; font-size: 1rem; }
+.side-panel h2, .comparison-band h2, .complexity-band h2, .learning-band h2, .scenario-band h2 { margin: 0 0 10px; font-size: 1rem; }
 .side-panel h3 { margin: 10px 0 6px; }
 .side-panel p { margin: 0 0 10px; line-height: 1.45; }
 .why { color: #38546f; background: #eef5f5; padding: 10px; border-left: 4px solid #45a29e; border-radius: 6px; }
@@ -100,13 +100,24 @@ textarea { min-height: 90px; resize: vertical; }
 .code-view .current { background: #fff3cd; color: #111827; font-weight: 900; }
 
 .lower-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
-.comparison-band, .complexity-band, .learning-band, .scenario-band { background: #fff; border: 1px solid #dce3eb; border-radius: 8px; box-shadow: 0 8px 24px rgba(31, 41, 55, 0.07); padding: 16px; }
-.comparison-header { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.comparison-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.comparison-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #fbfdff; }
-.comparison-title { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.comparison-band, .complexity-band, .learning-band, .scenario-band { background: #fff; border: 1px solid #dce3eb; border-radius: 8px; box-shadow: 0 8px 24px rgba(31, 41, 55, 0.07); padding: 16px; min-width: 0; }
+.comparison-band { grid-column: 1 / -1; }
+.comparison-header { display: grid; grid-template-columns: minmax(170px, 0.55fr) minmax(360px, 1.45fr); align-items: start; gap: 16px; margin-bottom: 14px; }
+.section-subtitle { color: #64748b; font-size: 0.88rem; line-height: 1.35; }
+.comparison-picker { justify-content: end; }
+.comparison-picker button { min-height: 38px; padding: 0.45rem 0.7rem; white-space: nowrap; }
+.comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; align-items: stretch; }
+.comparison-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; background: #fbfdff; min-width: 0; display: grid; gap: 12px; }
+.comparison-title { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 10px; margin-bottom: 0; }
+.comparison-title b { min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
+.complexity-badge { display: inline-flex; align-items: center; min-height: 26px; border-radius: 999px; background: #eef3f8; color: #475569; padding: 0.25rem 0.55rem; font-size: 0.78rem; font-weight: 900; white-space: nowrap; }
 .bar-track { height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
 .bar-track span { display: block; height: 100%; background: #4e79a7; }
+.comparison-metrics { display: grid; gap: 8px; }
+.comparison-metrics div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; }
+.comparison-metrics span { color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.comparison-metrics b { color: #17202a; font-variant-numeric: tabular-nums; text-align: right; }
+.empty-state { grid-column: 1 / -1; margin: 0; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 14px; }
 .complexity-band svg { width: 100%; height: 190px; }
 .chart-line { fill: none; stroke-width: 4; }
 .linear { stroke: #2fbf71; color: #2fbf71; }
@@ -132,7 +143,8 @@ textarea { min-height: 90px; resize: vertical; }
 @media (max-width: 1120px) {
   .topbar, .workspace, .lower-panels { grid-template-columns: 1fr; }
   .right-panel { order: 3; }
-  .comparison-grid { grid-template-columns: 1fr; }
+  .comparison-header { grid-template-columns: 1fr; }
+  .comparison-picker { justify-content: start; }
 }
 
 @media (max-width: 640px) {
@@ -142,4 +154,7 @@ textarea { min-height: 90px; resize: vertical; }
   .visual-canvas { height: 340px; }
   .stage { min-height: auto; }
   .topbar { gap: 10px; }
+  .comparison-grid { grid-template-columns: 1fr; }
+  .comparison-title { grid-template-columns: 1fr; }
+  .complexity-badge { width: fit-content; }
 }
